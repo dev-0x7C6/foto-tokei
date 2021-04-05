@@ -25,6 +25,18 @@ std::optional<entry> tokei::selected() {
 	return m_entries[m_currentIndex];
 }
 
+std::optional<entry> tokei::mixed() {
+	if (m_entries.empty())
+		return {};
+
+	const auto i = m_mixIndex++;
+
+	if (m_entries.size() == m_mixIndex)
+		m_mixIndex = 0;
+
+	return m_entries[i];
+}
+
 void tokei::setCurrentIndex(int index) {
 	m_currentIndex = index;
 }

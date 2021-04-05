@@ -27,6 +27,7 @@ public:
 	void setEntries(entries &&);
 
 	std::optional<entry> selected();
+	std::optional<entry> mixed();
 
 	Q_INVOKABLE void setCurrentIndex(int index);
 
@@ -35,6 +36,7 @@ signals:
 
 private:
 	int m_currentIndex{0};
+	std::size_t m_mixIndex{0};
 	entries m_entries;
 };
 

@@ -71,11 +71,11 @@ int main(int argc, char *argv[]) {
 	engine.rootContext()->setContextProperty("tokeiModel", &model);
 
 	QTimer timer;
-	timer.start(1000);
+	timer.start(3000);
 
 	QObject::connect(&timer, &QTimer::timeout, [&downloader, &model]() {
 		const auto now = QTime::currentTime();
-		const auto entry = model.selected();
+		const auto entry = model.mixed();
 		if (!entry)
 			return;
 		auto url = entry->url;
