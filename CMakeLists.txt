@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(foto-clock LANGUAGES CXX)
+project(tokei-frame LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -24,25 +24,25 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(foto-clock
+    qt_add_executable(tokei-frame
         ${PROJECT_SOURCES}
     )
 else()
     if(ANDROID)
-        add_library(foto-clock SHARED
+        add_library(tokei-frame SHARED
             ${PROJECT_SOURCES}
         )
     else()
-        add_executable(foto-clock
+        add_executable(tokei-frame
           ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-target_compile_definitions(foto-clock
+target_compile_definitions(tokei-frame
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
-target_link_libraries(foto-clock
+target_link_libraries(tokei-frame
   PRIVATE Qt${QT_VERSION_MAJOR}::Core
   Qt${QT_VERSION_MAJOR}::Quick
   Qt${QT_VERSION_MAJOR}::Network
