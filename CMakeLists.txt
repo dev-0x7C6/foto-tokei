@@ -47,3 +47,5 @@ target_link_libraries(tokei-frame
   Qt${QT_VERSION_MAJOR}::Quick
   Qt${QT_VERSION_MAJOR}::Network
 )
+
+install(TARGETS tokei-frame RUNTIME DESTINATION bin)
