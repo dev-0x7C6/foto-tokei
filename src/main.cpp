@@ -11,6 +11,7 @@
 #include <QDir>
 #include <QSettings>
 #include <QTimer>
+#include <QDirIterator>
 
 auto save_to_file(const QString &path, std::function<void(const QString &)> &&callable) {
 	return [path, callable{std::move(callable)}](const QByteArray &data) {
@@ -50,6 +51,22 @@ auto save_to_model(const QString &path, model::tokei &model) {
 	};
 }
 
+model::entries from_fs() {
+	model::entries entries;
+
+	QDirIterator it("/usr/share/bijin-assets", QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags);
+	while (it.hasNext()) {
+		model::entry entry;
+		QFileInfo info(it.next());
+
+		entry.name = info.fileName();
+		entry.url = "/usr/share/bijin-assets/" + entry.name + "/${hh}${mm}.jpg";
+		entries.emplace_back(std::move(entry));
+	}
+
+	return entries;
+}
+
 const auto metadata = QDir::homePath() + QDir::separator() + ".foto-tokei" + QDir::separator();
 
 int main(int argc, char *argv[]) {
@@ -65,7 +82,12 @@ int main(int argc, char *argv[]) {
 	network::downloader downloader;
 	model::tokei model;
 
-	downloader.download(QUrl("https://devwork.space/tokei/index.ini"), save_to_model(metadata + "index.ini", model));
+	auto entries_from_fs = from_fs();
+
+	if (auto entries_from_fs = from_fs(); entries_from_fs.empty())
+		downloader.download(QUrl("https://devwork.space/tokei/index.ini"), save_to_model(metadata + "index.ini", model));
+	else
+		model.setEntries(std::move(entries_from_fs));
 
 	QQmlApplicationEngine engine;
 	engine.rootContext()->setContextProperty("tokeiModel", &model);
@@ -82,14 +104,21 @@ int main(int argc, char *argv[]) {
 		url = url.replace("${hh}", now.toString("hh"));
 		url = url.replace("${mm}", now.toString("mm"));
 
+		if (QFile::exists(url)) {
+			emit model.imageReady(url);
+			return;
+		}
+
 		QDir dir;
 		dir.mkpath(metadata + entry->name);
 
 		auto filename = now.toString("hhmm") + ".jpg";
 		auto path = metadata + entry->name + QDir::separator() + filename;
 
-		if (QFile::exists(path))
+		if (QFile::exists(path)) {
 			emit model.imageReady(path);
+			return;
+		}
 
 		downloader.download({url}, save_to_file(path, [&model](auto &&path) {
 			emit model.imageReady(path);
