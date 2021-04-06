@@ -7,7 +7,7 @@ Window {
     height: 480
     visible: true
     color: "black"
-    title: qsTr("tokei-frame")
+    title: qsTr("qbijin-tokei")
 
     Drawer {
         id: drawer

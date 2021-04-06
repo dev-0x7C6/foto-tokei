@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(tokei-frame LANGUAGES CXX)
+project(qbijin-tokei LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -24,28 +24,28 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(tokei-frame
+    qt_add_executable(qbijin-tokei
         ${PROJECT_SOURCES}
     )
 else()
     if(ANDROID)
-        add_library(tokei-frame SHARED
+        add_library(qbijin-tokei SHARED
             ${PROJECT_SOURCES}
         )
     else()
-        add_executable(tokei-frame
+        add_executable(qbijin-tokei
           ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-target_compile_definitions(tokei-frame
+target_compile_definitions(qbijin-tokei
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
-target_link_libraries(tokei-frame
+target_link_libraries(qbijin-tokei
   PRIVATE Qt${QT_VERSION_MAJOR}::Core
   Qt${QT_VERSION_MAJOR}::Quick
   Qt${QT_VERSION_MAJOR}::Network
 )
 
-install(TARGETS tokei-frame RUNTIME DESTINATION bin)
+install(TARGETS qbijin-tokei RUNTIME DESTINATION bin)
